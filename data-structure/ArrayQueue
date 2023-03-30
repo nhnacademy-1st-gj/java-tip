@@ -1,0 +1,111 @@
+import java.util.NoSuchElementException;
+
+public class ArrayQueue implements Queue{
+
+   final int defaultSize = 100;
+   Integer[] elements;
+   int head;
+   int tail;
+
+   public ArrayQueue(){
+      this.elements = new Integer[this.defaultSize];
+      this.head = 0;
+      this.tail = 0;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return this.head == this.tail;
+   }
+
+   @Override
+   public void add(Integer element) {
+      if(this.tail == defaultSize){
+         Integer[] newElement = new Integer[this.elements.length + this.defaultSize];
+         System.arraycopy(this.elements,0,newElement,0,this.elements.length);
+         this.elements = newElement;
+      }
+      this.elements[this.tail] = element;
+      this.tail++;
+   }
+
+   @Override
+   public Integer element() {//데이터 돌려주기
+      if(this.isEmpty()){
+         throw new java.util.NoSuchElementException();
+      }
+      return this.elements[this.head];
+   }
+
+   @Override
+   public Integer remove() {
+      if(this.isEmpty()){
+         throw new NoSuchElementException();
+      }
+      Integer value = this.elements[this.head];
+      this.head++;
+      return value;
+   }
+
+   @Override
+   public int size() {
+      return (this.defaultSize + this.tail - this.head) % this.defaultSize;
+   }
+
+   @Override
+   public String toString() {
+      StringBuilder line = new StringBuilder();
+      int node = this.head;
+      while(node != this.tail){
+         line.append((line.length()!= 0? " " :"")+this.elements[node]);
+         node++;
+      }
+      return line.toString();
+   }
+
+   public void reverse(){
+      LinkedStack stack = new LinkedStack();
+      while(!this.isEmpty()){
+         Integer element = this.remove();
+         stack.push(element);
+      }
+      while(!stack.isEmpty()){
+         Integer element = stack.pop();
+         this.add(element);
+      }
+   }
+
+   public Integer second(){
+      if(this.size()<2){
+         throw new NoSuchElementException();
+      }
+      Integer value = null;
+      for(int i=0; i<this.size();i++){
+         Integer element = this.remove();
+         if(i==1){
+            value = element;
+         }
+         this.add(value);
+      }
+      return value;
+   }
+
+   public Integer removeSecond(){
+      Integer value = null;
+      if(this.size() > 1){
+         int size = this.size(); //두번째 것을 지울 경우, queue.size()가 달라짐
+         for(int i =0; i<size; i++){
+            Integer element = this.remove();
+            if(i != 1){
+               this.add(value);
+            }
+         }
+      }
+      return value;
+   }
+
+
+
+
+
+}
